@@ -24,10 +24,12 @@ from datetime import datetime
 
 import requests
 
+
 class DDNSUtils(object):
     """
     Utils class wrapper
     """
+
     @staticmethod
     def err(msg):
         """
@@ -91,7 +93,7 @@ class DDNSUtils(object):
             ip_addr = socket.gethostbyname(hostname)
         except socket_error as ex:
             cls.err("DomainRecord[{0}] cannot be resolved because of:{1}" \
-                     .format(hostname, ex))
+                    .format(hostname, ex))
 
         return ip_addr
 
