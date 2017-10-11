@@ -1,4 +1,5 @@
 *.pyc
 ddns.conf
+Pipfile.lock
 
 .idea
