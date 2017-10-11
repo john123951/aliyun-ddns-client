@@ -17,11 +17,14 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 """
+import sys
+
 from utils import DDNSUtils
 from config import DDNSConfig
 from record import DDNSDomainRecordManager
 
-def main():
+
+def main(method, *args):
     """
     Main routine
     """
@@ -29,7 +32,16 @@ def main():
     record_manager = DDNSDomainRecordManager(config)
 
     # get current public ip for this server
-    current_public_ip = DDNSUtils.get_current_public_ip()
+    def switch(m):
+        switcher = {
+            "net": lambda: DDNSUtils.get_current_public_ip(),
+            "static": lambda: args[0],
+        }
+        return switcher.get(m, lambda: "net|static 10.0.0.1")
+
+    func = switch(method)
+    current_public_ip = func()
+
     if not current_public_ip:
         DDNSUtils.err_and_exit("Failed to get current public IP")
 
@@ -66,5 +78,6 @@ def main():
             DDNSUtils.info("Successfully updated DomainRecord" \
                            "[{rec.subdomain}.{rec.domainname}]".format(rec=local_record))
 
+
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1], *(sys.argv[2:]))
